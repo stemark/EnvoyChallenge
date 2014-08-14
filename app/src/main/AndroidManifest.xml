@@ -27,6 +27,13 @@
                 <category android:name="stevens.mark.intent.category.game_list" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".GamesProvider"
+            android:authorities="envoy.games"
+            android:enabled="true"
+            android:exported="true" >
+        </provider>
     </application>
 
 </manifest>
