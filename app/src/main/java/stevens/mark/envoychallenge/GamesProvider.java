@@ -7,8 +7,9 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import java.util.List;
@@ -16,7 +17,10 @@ import java.util.List;
 public class GamesProvider extends ContentProvider {
     private static String authority= null;
     private final UriMatcher dataUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+
     public static enum Endpoint {
+        GAME           ("vnd.stevens.mark.game"),    // content://authority/game
         GAME_ID        ("vnd.stevens.mark.game");    // content://authority/game/#
 
         private String mimeSubType;
@@ -47,6 +51,9 @@ public class GamesProvider extends ContentProvider {
         }
     }
 
+    protected SQLiteOpenHelper mDatabase = null;
+
+
 
     public GamesProvider() {
     }
@@ -59,7 +66,7 @@ public class GamesProvider extends ContentProvider {
         for (Endpoint endpoint : Endpoint.values()){
             dataUriMatcher.addURI(info.authority, endpoint.asPath(), endpoint.ordinal());
         }
-
+        mDatabase = new GameDataDBHelper(context );
     }
 
     @Override
@@ -93,23 +100,24 @@ public class GamesProvider extends ContentProvider {
         if (endpoint== null || endpoint.hasId())
             throw new IllegalArgumentException("Invalid URI: " + uri);
 
-        // Insert into the database, notify observers, and return the qualified
-        // URI.
-//        long rowId = db.insert(manager.getWritableDatabase(), values, "");
-//        if (rowId > 0) {
-//            notifyChange(uri);
-//            return Uri.withAppendedPath(uri, Long.toString(rowId));
-//        } else {
-//            throw new SQLException("Failed to insert row at: " + uri);
-//        }
-        throw new UnsupportedOperationException();
+        String tableName = null;
+        switch (endpoint) {
 
+            case GAME_ID:
+                tableName = GameEntry.TABLE_NAME;
+                break;
+            default:
+                break;
+        }
+        SQLiteDatabase db = mDatabase.getWritableDatabase();
+        long rowId = db.insert(tableName, "null", values);
+        return Uri.withAppendedPath(uri, Long.toString(rowId));
     }
 
     @Override
     public boolean onCreate() {
-        // TODO: Implement this to initialize your content provider on startup.
-        return false;
+        // done in attach where we have a context passed in
+        return true;
     }
 
     @Override
@@ -126,15 +134,22 @@ public class GamesProvider extends ContentProvider {
 
         List<String> segs = uri.getPathSegments();
         int id =1;
-        Cursor cursor=null;
+        String tableName = null;
         switch (endpoint) {
 
+            case GAME_ID:
+                tableName = GameEntry.TABLE_NAME;
+                break;
             default:
                 break;
         }
 
+        // Run the query.
+        Cursor cursor = mDatabase.getReadableDatabase().query(tableName, projection, selection, selectionArgs, null, null,
+                sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
-        return cursor;    }
+        return cursor;
+    }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection,
@@ -143,22 +158,28 @@ public class GamesProvider extends ContentProvider {
 
         int match = dataUriMatcher.match(uri);
         Endpoint endpoint = Endpoint.get(match);
-        if (endpoint== null)
+        if (endpoint == null)
             throw new IllegalArgumentException("Invalid URI: " + uri);
 
         List<String> segs = uri.getPathSegments();
-        String depth = uri.getQueryParameter("depth");  // shallow,detail,assets
 
-        Bundle result;
+        String tableName = null;
         switch (endpoint) {
+            case GAME_ID:
+                tableName = GameEntry.TABLE_NAME;
+                break;
             default:
                 break;
         }
 
-
-        notifyChange(uri);  // let ContentResolver know that the update is finished
-        return updated;    }
-
+        // Update the item(s) and broadcast a change notification.
+        SQLiteDatabase db = mDatabase.getWritableDatabase();
+        updated = db.update(tableName, values, selection, selectionArgs);
+        if (updated>0) {
+            notifyChange(uri);
+        }
+        return updated;
+    }
 
     protected final String whereWithId(Uri uri, String selection) {
         String id = uri.getPathSegments().get(1);
