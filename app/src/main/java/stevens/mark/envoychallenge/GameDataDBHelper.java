@@ -21,7 +21,7 @@ public class GameDataDBHelper extends SQLiteOpenHelper {
                     GameEntry.COLUMN.game + TEXT_TYPE + COMMA_SEP +
                     GameEntry.COLUMN.console + TEXT_TYPE + COMMA_SEP +
                     GameEntry.COLUMN.image_url + TEXT_TYPE + COMMA_SEP +
-                    GameEntry.COLUMN.finished + INT_TYPE + COMMA_SEP +
+                    GameEntry.COLUMN.finished + INT_TYPE + //COMMA_SEP +
                     " )";
 
 

@@ -103,6 +103,7 @@ public class GamesProvider extends ContentProvider {
         String tableName = null;
         switch (endpoint) {
 
+            case GAME:
             case GAME_ID:
                 tableName = GameEntry.TABLE_NAME;
                 break;
@@ -111,6 +112,7 @@ public class GamesProvider extends ContentProvider {
         }
         SQLiteDatabase db = mDatabase.getWritableDatabase();
         long rowId = db.insert(tableName, "null", values);
+        notifyChange(uri);
         return Uri.withAppendedPath(uri, Long.toString(rowId));
     }
 
@@ -137,6 +139,7 @@ public class GamesProvider extends ContentProvider {
         String tableName = null;
         switch (endpoint) {
 
+            case GAME:
             case GAME_ID:
                 tableName = GameEntry.TABLE_NAME;
                 break;
@@ -165,6 +168,7 @@ public class GamesProvider extends ContentProvider {
 
         String tableName = null;
         switch (endpoint) {
+            case GAME:
             case GAME_ID:
                 tableName = GameEntry.TABLE_NAME;
                 break;
