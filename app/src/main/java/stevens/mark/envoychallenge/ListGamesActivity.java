@@ -48,7 +48,7 @@ public class ListGamesActivity extends Activity implements
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, ListGamesFragment.newInstance("", ""))
+                    .add(R.id.container, ListGamesFragment.newInstance("listings", ""))
                     .commit();
         }
     }

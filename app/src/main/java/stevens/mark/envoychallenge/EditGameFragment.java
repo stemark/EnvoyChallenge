@@ -4,10 +4,12 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 
 /**
@@ -33,6 +37,7 @@ public class EditGameFragment extends Fragment {
     private static final String ARG_GAME_URI = "uri";
     private static final String ARG_PARAM2 = "param2";
     private Uri GAMES_URI = GamesProvider.Endpoint.GAME.buildUpon().build();
+    private static final int RESULT_GET_GAME_IMAGE = 1001;
 
     // TODO: Rename and change types of parameters
     private String mParam2;
@@ -43,9 +48,12 @@ public class EditGameFragment extends Fragment {
     private EditText game_label;
     private EditText game_console;
     private CheckBox is_finished;
+    private ImageView game_image;
+    private String image_url;
 
     private Uri gameUri;
     private ContentValues gameData;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -105,12 +113,23 @@ public class EditGameFragment extends Fragment {
         game_label = (EditText)view.findViewById(R.id.game_label);
         game_console = (EditText)view.findViewById(R.id.game_console_label);
         is_finished = (CheckBox)view.findViewById(R.id.game_finished);
-
+        game_image = (ImageView)view.findViewById(R.id.game_image);
+        game_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectGameImage(v);
+            }
+        });
         if (gameData!=null){
             game_label.setText(gameData.getAsString(GameEntry.COLUMN.game.name()));
             game_console.setText(gameData.getAsString(GameEntry.COLUMN.console.name()));
             is_finished.setChecked(gameData.getAsBoolean(GameEntry.COLUMN.finished.name()));
+            image_url = gameData.getAsString(gameData.getAsString(GameEntry.COLUMN.image_url.name()));
+            if (!TextUtils.isEmpty(image_url)) {
+                game_image.setImageURI(Uri.parse(image_url));
+            }
         }
+
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -187,11 +206,38 @@ public class EditGameFragment extends Fragment {
         }
         return true;
     }
+    public void selectGameImage(View view) {
+        Intent getGameImage = new Intent(Intent.ACTION_GET_CONTENT)
+                .setType("image/*")
+                .addCategory(Intent.CATEGORY_OPENABLE);
+
+        startActivityForResult(Intent.createChooser(getGameImage, "Game Image"), RESULT_GET_GAME_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RESULT_GET_GAME_IMAGE:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data != null) {
+                        Uri gameImageSrc = data.getData();
+                        if (game_image != null) {
+                            image_url = gameImageSrc.toString();
+                            game_image.setImageURI(gameImageSrc);
+                        }
+                    }
+
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     private ContentValues getContentValues(){
         ContentValues values = new ContentValues();
         values.put(GameEntry.COLUMN.game.name(), game_label.getText().toString());
         values.put(GameEntry.COLUMN.console.name(), game_console.getText().toString());
+        values.put(GameEntry.COLUMN.image_url.name(), image_url);
         values.put(GameEntry.COLUMN.finished.name(), is_finished.isChecked());
         return values;
     }

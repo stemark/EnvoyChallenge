@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.SimpleCursorAdapter;
 
 /**
@@ -29,7 +30,7 @@ import android.widget.SimpleCursorAdapter;
  * Activities containing this fragment MUST implement the HandlerProvider
  * interface.
  */
-public class ListGamesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ListGamesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, RatingBar.OnRatingBarChangeListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,22 +73,11 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
         }
 
         getLoaderManager().initLoader(LOADER_GAME_LIST, new Bundle(), this );
-        // TODO: Change Adapter to display your content
-        setListAdapter(new SimpleCursorAdapter(
-                getActivity(),
-                R.layout.list_item_game_data,
-                null,
-                new String[]{
-                        GameEntry.COLUMN.game.name(),
-                        GameEntry.COLUMN.console.name()//,
-//                        GameEntry.COLUMN.image_url.name()
-                },
-                new int[]{
-                        android.R.id.text1,
-                        R.id.game_console,
-//                        R.id.imageView
-                },
-                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER ));
+
+        if ("ratings".equals(mParam1))
+            setListAdapter(prepareRatingsAdapter());
+        else
+            setListAdapter(prepareListingsAdapter());
 
         setHasOptionsMenu(true);
         ActionBar actionBar = getActivity().getActionBar();
@@ -107,13 +97,6 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
         else
             throw new ClassCastException(activity.toString()
                     + " must implement HandlerProvider");
-
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
@@ -131,6 +114,7 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==R.id.action_add_item){
+            //TODO: come back to this
             ContentValues values = new ContentValues();
             values.put(GameEntry.COLUMN.game.name(),  "new game");
             Uri newGameUri = getActivity().getContentResolver().insert(GAMES_URI, values);
@@ -154,6 +138,72 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
             mActivityHandler.sendMessage(msg);
         }
     }
+
+    private CursorAdapter prepareListingsAdapter(){
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                getActivity(),
+                R.layout.list_item_game_data,
+                null,
+                new String[]{
+                        GameEntry.COLUMN.game.name(),
+                        GameEntry.COLUMN.console.name(),
+                        GameEntry.COLUMN.image_url.name()
+                },
+                new int[]{
+                        android.R.id.text1,
+                        R.id.game_console,
+                        R.id.imageView
+                },
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
+        return adapter;
+    }
+    private CursorAdapter prepareRatingsAdapter(){
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                getActivity(),
+                R.layout.list_item_game_rating,
+                null,
+                new String[]{
+                        GameEntry.COLUMN.game.name(),
+                        GameEntry.COLUMN.console.name(),
+                        GameEntry.COLUMN.image_url.name(),
+                        GameEntry.COLUMN.rating.name()
+
+                },
+                new int[]{
+                        android.R.id.text1,
+                        R.id.game_console,
+                        R.id.imageView,
+                        R.id.ratingBar
+                },
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
+
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex==GameEntry.COLUMN.rating.ordinal()){
+                    // setup the update uri now
+                    Uri gameUri = ContentUris.withAppendedId(GAMES_URI, cursor.getLong(GameEntry.COLUMN._id.ordinal()));
+                    view.setTag(gameUri);
+                    ((RatingBar)view).setRating(cursor.getFloat(columnIndex));
+                    ((RatingBar)view).setOnRatingBarChangeListener(ListGamesFragment.this);
+                    return true;
+                }
+                return false;
+            }
+        });
+        return adapter;
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+        Uri gameUri = (Uri)ratingBar.getTag();
+        ContentValues values = new ContentValues();
+        values.put(GameEntry.COLUMN.rating.name(), rating);
+        getActivity().getContentResolver().update(gameUri, values, null,null);
+
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -193,11 +243,14 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
             if (!c.isAfterLast()) {
                 values.put(GameEntry.COLUMN.game.name(), c.getString(GameEntry.COLUMN.game.ordinal()));
                 values.put(GameEntry.COLUMN.console.name(), c.getString(GameEntry.COLUMN.console.ordinal()));
-                values.put(GameEntry.COLUMN.finished.name(), c.getInt(GameEntry.COLUMN.game.ordinal()) != 0);
+                values.put(GameEntry.COLUMN.image_url.name(), c.getString(GameEntry.COLUMN.image_url.ordinal()));
+                values.put(GameEntry.COLUMN.rating.name(), c.getFloat(GameEntry.COLUMN.rating.ordinal()));
+                values.put(GameEntry.COLUMN.finished.name(), c.getInt(GameEntry.COLUMN.finished.ordinal()) != 0);
             }
         }
         return values;
     }
+
     /**
     * This interface must be implemented by activities that contain this
     * fragment to allow an interaction in this fragment to be communicated

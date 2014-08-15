@@ -20,6 +20,12 @@ public class MainActivity extends Activity {
                 startActivity(ListGamesActivity.prepareIntent());
             }
         });
+        findViewById(R.id.btn_game_ratings).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(RateGamesActivity.prepareIntent());
+            }
+        });
     }
 
 

@@ -5,4 +5,5 @@ package stevens.mark.envoychallenge;
  */
 public class IntentConstant {
     static public final String CATEGORY_GAME_LIST = "stevens.mark.intent.category.game_list";
+    static public final String CATEGORY_GAME_RATING = "stevens.mark.intent.category.game_rating";
 }

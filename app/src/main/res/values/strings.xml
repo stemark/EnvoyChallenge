@@ -12,5 +12,6 @@
     <string name="game_finished_label">I finished!</string>
     <string name="action_done">Done</string>
     <string name="action_reset">Cancel</string>
+    <string name="title_activity_rate_games">RateGamesActivity</string>
 
 </resources>

@@ -164,6 +164,10 @@ public class GamesProvider extends ContentProvider {
         if (endpoint == null)
             throw new IllegalArgumentException("Invalid URI: " + uri);
 
+        if (endpoint.hasId()) {
+            selection = whereWithId(uri, selection);
+        }
+
         List<String> segs = uri.getPathSegments();
 
         String tableName = null;
