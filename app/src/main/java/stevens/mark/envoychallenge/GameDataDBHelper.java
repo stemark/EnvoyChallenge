@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class GameDataDBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "datastore.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -21,6 +21,7 @@ public class GameDataDBHelper extends SQLiteOpenHelper {
                     GameEntry.COLUMN.game + TEXT_TYPE + COMMA_SEP +
                     GameEntry.COLUMN.console + TEXT_TYPE + COMMA_SEP +
                     GameEntry.COLUMN.image_url + TEXT_TYPE + COMMA_SEP +
+                    GameEntry.COLUMN.rating + INT_TYPE + COMMA_SEP +
                     GameEntry.COLUMN.finished + INT_TYPE + //COMMA_SEP +
                     " )";
 

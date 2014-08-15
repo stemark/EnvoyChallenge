@@ -11,7 +11,8 @@ public class GameEntry {
         game,
         image_url,
         console,
-        finished
+        finished,
+        rating
     }
 
     public static final String[] PROJECTION = new String[ COLUMN.values().length];
