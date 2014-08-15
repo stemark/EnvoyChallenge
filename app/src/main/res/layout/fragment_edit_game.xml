@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#fafafa"
+    android:layout_height="match_parent"
+    tools:context="stevens.mark.envoychallenge.EditGameFragment">
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:visibility="gone"
+        android:background="@android:drawable/divider_horizontal_bright" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip">
+
+
+        <EditText
+            android:id="@+id/game_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/game_label_prompt"
+            android:inputType="text"
+            />
+
+
+        <EditText
+            android:id="@+id/game_console_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/game_console_prompt"
+            android:inputType="text"
+            />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/game_finished_label"
+            android:id="@+id/game_finished"
+            android:layout_gravity="center_horizontal"/>
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@android:drawable/divider_horizontal_bright" />
+
+
+
+</LinearLayout>
