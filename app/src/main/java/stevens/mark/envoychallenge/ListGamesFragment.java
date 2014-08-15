@@ -18,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Checkable;
+import android.widget.CheckedTextView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
@@ -103,6 +105,7 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mActivityHandler = null;
     }
 
     @Override
@@ -111,13 +114,17 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==R.id.action_add_item){
-            //TODO: come back to this
-            ContentValues values = new ContentValues();
-            values.put(GameEntry.COLUMN.game.name(),  "new game");
-            Uri newGameUri = getActivity().getContentResolver().insert(GAMES_URI, values);
+//            ContentValues values = new ContentValues();
+//            values.put(GameEntry.COLUMN.game.name(),  "new game");
+//            Uri newGameUri = getActivity().getContentResolver().insert(GAMES_URI, values);
+            Fragment fragment = EditGameFragment.newInstance(null,null);
+            Message msg = mActivityHandler.obtainMessage(ListGamesActivity.LIST_GAMES_MSG_EDIT_GAME,  fragment );
+            mActivityHandler.sendMessage(msg);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -147,16 +154,48 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
                 new String[]{
                         GameEntry.COLUMN.game.name(),
                         GameEntry.COLUMN.console.name(),
-                        GameEntry.COLUMN.image_url.name()
+                        GameEntry.COLUMN.image_url.name(),
+                        GameEntry.COLUMN.finished.name()
                 },
                 new int[]{
                         android.R.id.text1,
                         R.id.game_console,
-                        R.id.imageView
+                        R.id.imageView,
+                        R.id.game_finished
                 },
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
+
+
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex==GameEntry.COLUMN.finished.ordinal()){
+                    // setup the update uri now
+                    Uri gameUri = ContentUris.withAppendedId(GAMES_URI, cursor.getLong(GameEntry.COLUMN._id.ordinal()));
+                    view.setTag(gameUri);
+                    ((CheckedTextView)view).setChecked(cursor.getInt(columnIndex) == 1);
+                    ((CheckedTextView)view).setOnClickListener(checkFinishedClickListener);
+                    return true;
+                }
+                return false;
+            }
+        });
         return adapter;
     }
+
+    private View.OnClickListener checkFinishedClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Uri gameUri = (Uri)v.getTag();
+            Checkable checkable = (Checkable)v;
+            checkable.toggle();
+            ContentValues values = new ContentValues();
+            values.put(GameEntry.COLUMN.finished.name(), checkable.isChecked() );
+            getActivity().getContentResolver().update(gameUri, values, null, null);
+
+        }
+    };
+
     private CursorAdapter prepareRatingsAdapter(){
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(

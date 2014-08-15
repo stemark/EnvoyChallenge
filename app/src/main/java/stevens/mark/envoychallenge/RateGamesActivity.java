@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 public class RateGamesActivity extends Activity  implements
         Handler.Callback,
@@ -55,8 +52,14 @@ public class RateGamesActivity extends Activity  implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.rate_games, menu);
+//        getMenuInflater().inflate(R.menu.rate_games, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.removeItem(R.id.action_add_item);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -71,19 +74,4 @@ public class RateGamesActivity extends Activity  implements
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_rate_games, container, false);
-            return rootView;
-        }
-    }
 }

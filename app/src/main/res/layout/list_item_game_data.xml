@@ -2,7 +2,9 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" >
 
     <ImageView
         android:layout_width="96dp"
@@ -38,5 +40,17 @@
         android:layout_below="@android:id/text1"
         android:layout_alignRight="@android:id/text1"
         android:layout_alignEnd="@android:id/text1"/>
+
+    <CheckedTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finished the game"
+        android:id="@+id/game_finished"
+        android:checked="false"
+        android:gravity="center_vertical"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        android:layout_below="@+id/game_console"
+        android:layout_alignParentRight="true"/>
+
 
 </RelativeLayout>

@@ -1,16 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:background="#fafafa"
     android:layout_height="match_parent"
     tools:context="stevens.mark.envoychallenge.EditGameFragment">
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:visibility="gone"
-        android:background="@android:drawable/divider_horizontal_bright" />
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -27,13 +23,43 @@
             android:src="@android:drawable/ic_menu_gallery"
             android:id="@+id/game_image"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:visibility="visible"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:drawable/divider_horizontal_bright" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/game_title_label"
+            android:id="@+id/game_title_label"/>
+
         <EditText
             android:id="@+id/game_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/game_label_prompt"
+            android:hint="@string/game_label_hint"
             android:inputType="text"
             />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:visibility="visible"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:drawable/divider_horizontal_bright" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/game_console_label"
+            android:id="@+id/textView"/>
 
 
         <EditText
@@ -43,6 +69,13 @@
             android:hint="@string/game_console_prompt"
             android:inputType="text"
             />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:visibility="visible"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:drawable/divider_horizontal_bright" />
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -56,6 +89,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"
+        android:visibility="visible"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
         android:background="@android:drawable/divider_horizontal_bright" />
 
 

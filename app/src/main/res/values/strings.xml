@@ -8,10 +8,14 @@
     <string name="action_add">+</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="game_label_prompt">Game Name</string>
+    <string name="game_label_hint">Game Title</string>
     <string name="game_console_prompt">Console</string>
+    <string name="game_console_hint">Game Console</string>
     <string name="game_finished_label">I finished!</string>
     <string name="action_done">Done</string>
     <string name="action_reset">Cancel</string>
     <string name="title_activity_rate_games">RateGamesActivity</string>
+    <string name="game_title_label">Game Title</string>
+    <string name="game_console_label">Game Console</string>
 
 </resources>

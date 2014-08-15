@@ -8,11 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 public class ListGamesActivity extends Activity implements
         Handler.Callback,
@@ -70,17 +67,9 @@ public class ListGamesActivity extends Activity implements
         if (id == R.id.action_settings) {
             return true;
         }
-//        if (id == android.R.id.home) {
-//            return true;
-//        }
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onFragmentInteraction(Uri uri) {
-//
-//        // change out listFragment for EditGameFragment
-//    }
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -108,19 +97,4 @@ public class ListGamesActivity extends Activity implements
         return false;
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_list_games, container, false);
-            return rootView;
-        }
-    }
 }
