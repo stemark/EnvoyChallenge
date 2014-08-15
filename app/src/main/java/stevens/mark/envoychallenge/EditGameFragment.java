@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -124,9 +126,17 @@ public class EditGameFragment extends Fragment {
             game_label.setText(gameData.getAsString(GameEntry.COLUMN.game.name()));
             game_console.setText(gameData.getAsString(GameEntry.COLUMN.console.name()));
             is_finished.setChecked(gameData.getAsBoolean(GameEntry.COLUMN.finished.name()));
-            image_url = gameData.getAsString(gameData.getAsString(GameEntry.COLUMN.image_url.name()));
-            if (!TextUtils.isEmpty(image_url)) {
-                game_image.setImageURI(Uri.parse(image_url));
+            image_url = gameData.getAsString(GameEntry.COLUMN.image_url.name());
+            //game_image.setImageURI(Uri.parse(image_url));
+            if (TextUtils.isEmpty(image_url)){
+                Picasso.with(getActivity())
+                        .load(android.R.drawable.ic_menu_gallery)
+                        .into(game_image);
+            } else {
+                Picasso.with(getActivity())
+                        .load(Uri.parse(image_url))
+                        .resize(96,96)
+                        .into(game_image);
             }
         }
 

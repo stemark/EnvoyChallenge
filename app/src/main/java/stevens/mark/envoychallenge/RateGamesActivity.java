@@ -14,7 +14,7 @@ public class RateGamesActivity extends Activity  implements
         HandlerProvider{
 
     private Fragment mFragment;
-    private Handler mHandler;
+    private Handler mHandler = new Handler(this);
 
     public static Intent prepareIntent() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -29,7 +29,6 @@ public class RateGamesActivity extends Activity  implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate_games);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        mHandler = new Handler(this);
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()

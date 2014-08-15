@@ -16,7 +16,8 @@ public class ListGamesActivity extends Activity implements
         HandlerProvider{
 
     private Fragment mFragment;
-    private Handler mHandler;
+    private Handler mHandler = new Handler(this);
+    ;
 
     public static final int LIST_GAMES_MSG_LIST_GAMES = 100;
     public static final int LIST_GAMES_MSG_EDIT_GAME = 101;
@@ -41,7 +42,6 @@ public class ListGamesActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_games);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        mHandler = new Handler(this);
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
