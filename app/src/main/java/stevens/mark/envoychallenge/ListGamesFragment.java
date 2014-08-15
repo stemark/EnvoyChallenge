@@ -14,16 +14,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Checkable;
-import android.widget.CheckedTextView;
-import android.widget.CursorAdapter;
-import android.widget.ListView;
-import android.widget.RatingBar;
-import android.widget.SimpleCursorAdapter;
+import android.widget.*;
+
+import com.squareup.picasso.Picasso;
 
 /**
  * A fragment representing a list of Items.
@@ -45,7 +43,6 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
     private Handler mActivityHandler;
 
     // TODO: Rename and change types of parameters
@@ -104,7 +101,6 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
         mActivityHandler = null;
     }
 
@@ -169,6 +165,20 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex==GameEntry.COLUMN.image_url.ordinal()){
+                    String imageUrl = cursor.getString(GameEntry.COLUMN.image_url.ordinal());
+                    if (TextUtils.isEmpty(imageUrl)){
+                        Picasso.with(getActivity())
+                                .load(android.R.drawable.ic_menu_gallery)
+                                .into((ImageView)view);
+                    } else {
+                        Picasso.with(getActivity())
+                                .load(Uri.parse(imageUrl))
+                                .resize(96,96)
+                                .into((ImageView) view);
+                    }
+                    return true;
+                } else
                 if (columnIndex==GameEntry.COLUMN.finished.ordinal()){
                     // setup the update uri now
                     Uri gameUri = ContentUris.withAppendedId(GAMES_URI, cursor.getLong(GameEntry.COLUMN._id.ordinal()));
@@ -220,6 +230,20 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex==GameEntry.COLUMN.image_url.ordinal()){
+                    String imageUrl = cursor.getString(GameEntry.COLUMN.image_url.ordinal());
+                    if (TextUtils.isEmpty(imageUrl)){
+                        Picasso.with(getActivity())
+                                .load(android.R.drawable.ic_menu_gallery)
+                                .into((ImageView)view);
+                    } else {
+                        Picasso.with(getActivity())
+                                .load(Uri.parse(imageUrl))
+                                .resize(96,96)
+                                .into((ImageView) view);
+                    }
+                    return true;
+                } else
                 if (columnIndex==GameEntry.COLUMN.rating.ordinal()){
                     // setup the update uri now
                     Uri gameUri = ContentUris.withAppendedId(GAMES_URI, cursor.getLong(GameEntry.COLUMN._id.ordinal()));
@@ -290,19 +314,5 @@ public class ListGamesFragment extends ListFragment implements LoaderManager.Loa
         return values;
     }
 
-    /**
-    * This interface must be implemented by activities that contain this
-    * fragment to allow an interaction in this fragment to be communicated
-    * to the activity and potentially other fragments contained in that
-    * activity.
-    * <p>
-    * See the Android Training lesson <a href=
-    * "http://developer.android.com/training/basics/fragments/communicating.html"
-    * >Communicating with Other Fragments</a> for more information.
-    */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }
 
 }
